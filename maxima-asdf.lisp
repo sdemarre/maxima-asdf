@@ -6,6 +6,8 @@
 
 (in-package :maxima)
 
+(defparameter $using_asdf_load nil)
+
 (defun $asdf_load (name)
   (asdf:load-system name))
 
@@ -26,10 +28,11 @@
   (append-to-path $file_search_usage p "$$$.{usg,txt}"))
 
 (defun $asdf_load_source (name)
-  (prog1
-      (asdf:oos 'asdf:load-source-op name)
-    (let ((source-topdir (format nil "~a" (ql:where-is-system name))))
-      (append-to-maxima-paths source-topdir))))
+  (let (($using_asdf_load t))
+    (prog1
+        (asdf:oos 'asdf:load-source-op name)
+      (let ((source-topdir (format nil "~a" (ql:where-is-system name))))
+        (append-to-maxima-paths source-topdir)))))
 
 
 
